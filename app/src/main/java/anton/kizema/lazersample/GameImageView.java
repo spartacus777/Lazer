@@ -1,16 +1,11 @@
 package anton.kizema.lazersample;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -20,14 +15,7 @@ import android.widget.ImageView;
 import java.util.LinkedList;
 import java.util.List;
 
-import anton.kizema.lazersample.helper.BitmapHelper;
-import anton.kizema.lazersample.helper.UIHelper;
-
 public class GameImageView extends ImageView {
-
-    private static final int ERROR_IMAGE_W = UIHelper.getW();
-    private static final int ERROR_IMAGE_H = UIHelper.getH();
-    private static final int ERROR_IMAGE = R.drawable.auth_background;
 
     private static final int CLICK = 3;
 
@@ -42,21 +30,16 @@ public class GameImageView extends ImageView {
 
     private MODE mode = MODE.NONE;
     private Matrix matrix;
-    private int drawableRotation = 0;
 
     private float origWidth, origHeight;
     private int oldMeasuredWidth, oldMeasuredHeight;
     private ScaleGestureDetector mScaleDetector;
-
-    private String fileName;
 
     private boolean centerCrop = false;
 
     private Bitmap readyBitmap;
 
     private List<TouchImageViewCallback> touchImageViewCallback;
-    private OnNoScaleTouchListener onNoScaleTouchListener;
-    private OnReadyListener onReadyListener;
 
     private ImageTouchListener imageTouchListener;
 
@@ -70,18 +53,6 @@ public class GameImageView extends ImageView {
         void onBitmapSizesCounted(Matrix m, int w, int h);
 
         void onSendTouch(MotionEvent motionEvent);
-    }
-
-    public interface OnReadyListener {
-        void onReady();
-    }
-
-    public interface OnNoScaleTouchListener {
-        void onTouch(MotionEvent event);
-    }
-
-    public void setOnNoScaleTouchListener(OnNoScaleTouchListener onNoScaleTouchListener) {
-        this.onNoScaleTouchListener = onNoScaleTouchListener;
     }
 
     public GameImageView(Context context, Bitmap btm) {
@@ -195,99 +166,6 @@ public class GameImageView extends ImageView {
         return delta;
     }
 
-    private class BitmapWorkerTask extends AsyncTask<Void, Void, Drawable> {
-        BitmapFactory.Options options;
-
-        private volatile Context context;
-        private volatile Resources res;
-
-        public BitmapWorkerTask(BitmapFactory.Options options) {
-            this.options = options;
-
-            context = getContext();
-            res = getResources();
-        }
-
-        @Override
-        protected Drawable doInBackground(Void... p) {
-            options.inJustDecodeBounds = false;
-            Bitmap myBitmap = BitmapFactory.decodeFile(fileName, options);
-
-            if (myBitmap == null) {
-                return context.getResources().getDrawable(ERROR_IMAGE);
-            }
-
-            Drawable dr = new BitmapDrawable(context.getResources(), myBitmap);
-            dr = BitmapHelper.resizeRotate(res, dr, myBitmap.getWidth(), myBitmap.getHeight(), drawableRotation);
-            return dr;
-        }
-
-        @Override
-        protected void onPostExecute(Drawable drawable) {
-            Log.d("ANT", " = FINISHED = ");
-            setImageDrawable(drawable);
-            forceLayout();
-        }
-    }
-
-    private Point savedDrawableSize = new Point();
-    private BitmapWorkerTask task;
-
-    private int c = 0;
-
-    public Point adjustDrawable() {
-        ++c;
-
-        if (c > 1) {
-            return savedDrawableSize;
-        }
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(fileName, options);
-
-        options.inSampleSize = BitmapHelper.calculateInSampleSize(options, viewWidth / 2, (viewHeight) / 2);
-//        options.inSampleSize = BitmapHelper.calculateInSampleSize(options, viewWidth, viewHeight);
-        Log.d("ANT", "viewWidth " + viewWidth + "    viewHeight " + viewHeight + "   options.inSampleSize :" + options.inSampleSize);
-
-        Point ret = new Point();
-        ret.x = options.outWidth / options.inSampleSize;
-        ret.y = options.outHeight / options.inSampleSize;
-
-        //if we have an error drawable, thene init with default value
-        if (ret.x == 0 || ret.y == 0) {
-            Log.d("ANT", " ret.x == 0 && ret.y == 0 ");
-            ret.x = ERROR_IMAGE_W;
-            ret.y = ERROR_IMAGE_H;
-        }
-
-        savedDrawableSize.x = ret.x;
-        savedDrawableSize.y = ret.y;
-
-        if (drawableRotation == 90 || drawableRotation == 270) {
-            savedDrawableSize.x = ret.y;
-            savedDrawableSize.y = ret.x;
-        }
-
-        Log.d("ANT", "outWidth : " + options.outWidth + "    outHeight: " + options.outHeight + "   inSampleSize:" + options.inSampleSize);
-
-        if (task != null) {
-            if (!task.isCancelled()) {
-                task.cancel(true);
-            }
-            task = new BitmapWorkerTask(options);
-            task.execute();
-            return ret;
-        }
-
-        task = new BitmapWorkerTask(options);
-        task.execute();
-
-        return ret;
-    }
-
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -304,15 +182,9 @@ public class GameImageView extends ImageView {
         if (saveScale == 1) {
             //Fit to screen.
             float scale;
-            Point p;
-
-            if (readyBitmap != null) {
-                p = new Point();
-                p.x = readyBitmap.getWidth();
-                p.y = readyBitmap.getHeight();
-            } else {
-                p = adjustDrawable();
-            }
+            Point p = new Point();
+            p.x = readyBitmap.getWidth();
+            p.y = readyBitmap.getHeight();
 
             if (getDrawable() == null || getDrawable().getIntrinsicWidth() == 0 || getDrawable().getIntrinsicHeight() == 0) {
                 return;
@@ -345,15 +217,8 @@ public class GameImageView extends ImageView {
                 callback.onBitmapSizesCounted(matrix, bmWidth, bmHeight);
             }
 
-            if (onReadyListener != null) {
-                onReadyListener.onReady();
-            }
         }
         fixTrans();
-    }
-
-    public void setOnReadyListener(OnReadyListener onReadyListener) {
-        this.onReadyListener = onReadyListener;
     }
 
     private class ImageTouchListener implements OnTouchListener {
@@ -363,8 +228,7 @@ public class GameImageView extends ImageView {
             mScaleDetector.onTouchEvent(event);
             PointF curr = new PointF(event.getX(), event.getY());
 
-            if (saveScale == 1 && onNoScaleTouchListener != null) {
-                onNoScaleTouchListener.onTouch(event);
+            if (saveScale == 1) {
                 return true;
             }
 

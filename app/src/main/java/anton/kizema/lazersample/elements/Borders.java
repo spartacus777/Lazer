@@ -3,8 +3,7 @@ package anton.kizema.lazersample.elements;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
-import android.util.Log;
+import android.graphics.Point;
 
 import anton.kizema.lazersample.helper.PaintHelper;
 import anton.kizema.lazersample.helper.UIHelper;
@@ -46,25 +45,12 @@ public class Borders extends BaseElement{
     }
 
     private void demoDraw(Canvas canvas){
-        float fx = gameMatrix.size * lastSelectedPoint.x / UIHelper.getW();
-        int x = (int) (fx);
-        if (fx - x > 0.5f){
-            ++x;
-        }
-
-        float fy = gameMatrix.size * lastSelectedPoint.y / UIHelper.getH();
-        int y = (int) (fy);
-        if (fy - y > 0.5f){
-            ++y;
-        }
-
-        Log.d("TOPVIEW", "x:"+x+", y:"+y);
-        canvas.drawCircle(UIHelper.getW() / (gameMatrix.size) * x, UIHelper.getH() / (gameMatrix.size) * y, UIHelper.getPixel(6), demoPaint);
+        canvas.drawCircle(UIHelper.getW() / (gameMatrix.size) * lastSelectedPoint.x, UIHelper.getH() / (gameMatrix.size) * lastSelectedPoint.y, UIHelper.getPixel(6), demoPaint);
     }
 
-    private PointF lastSelectedPoint = new PointF();
+    private Point lastSelectedPoint = new Point();
 
-    public void showTouch(PointF point){
+    public void showTouch(Point point){
         lastSelectedPoint.x = point.x;
         lastSelectedPoint.y = point.y;
     }

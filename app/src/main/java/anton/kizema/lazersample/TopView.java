@@ -3,6 +3,7 @@ package anton.kizema.lazersample;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,13 +12,15 @@ import android.view.View;
 
 import anton.kizema.lazersample.elements.Borders;
 import anton.kizema.lazersample.elements.DrawingField;
+import anton.kizema.lazersample.helper.UIHelper;
 import anton.kizema.lazersample.matrix.GameMatrix;
 
 public class TopView extends View implements GameImageView.TouchImageViewCallback {
 
+    public static int MAX_DIST_TOUCH = UIHelper.getW()/40;
     private static int MAX_TIME_TOUCH = 300;//0.3 seconds
 
-
+    private GameMatrix gameMatrix;
     private DrawingField drawingField;
     private Borders borders;
 
@@ -42,7 +45,7 @@ public class TopView extends View implements GameImageView.TouchImageViewCallbac
     }
 
     private void init(){
-        GameMatrix gameMatrix = GameMatrix.createDumpMatrix();
+        gameMatrix = GameMatrix.createDumpMatrix();
         drawingField = new DrawingField(gameMatrix);
         borders = new Borders(gameMatrix);
     }
@@ -114,12 +117,19 @@ public class TopView extends View implements GameImageView.TouchImageViewCallbac
             case MotionEvent.ACTION_UP:
                 Log.v("TOPVIEW", "ACTION_UP");
 
-                if (Math.sqrt(Math.pow(event.getX() - origCoordinates.x, 2) + Math.pow(event.getY() - origCoordinates.y, 2)) < Constants.MAX_DIST_TOUCH &&
+                if (Math.sqrt(Math.pow(event.getX() - origCoordinates.x, 2) + Math.pow(event.getY() - origCoordinates.y, 2)) < MAX_DIST_TOUCH &&
                         System.currentTimeMillis() - timeOnDown < MAX_TIME_TOUCH &&
                         singleFinger){
                     //We recognize this as touch
                     Log.d("TOPVIEW", "showTouch");
-                    borders.showTouch(downPoint);
+
+                    /**
+                     * this point in terms of GameMatrix coordinates represents
+                     * our onClick event's (x,y)
+                     */
+                    Point selectedCoordinate = getCoordinate(downPoint);
+
+                    borders.showTouch(selectedCoordinate);
                     invalidate();
                 }
 
@@ -128,6 +138,22 @@ public class TopView extends View implements GameImageView.TouchImageViewCallbac
                 Log.v("TOPVIEW", "ACTION_CANCEL");
                 break;
         }
+    }
+
+    private Point getCoordinate(PointF clickedPoint){
+        float fx = gameMatrix.size * clickedPoint.x / UIHelper.getW();
+        int x = (int) (fx);
+        if (fx - x > 0.5f){
+            ++x;
+        }
+
+        float fy = gameMatrix.size * clickedPoint.y / UIHelper.getH();
+        int y = (int) (fy);
+        if (fy - y > 0.5f){
+            ++y;
+        }
+
+        return new Point(x, y);
     }
 
 }
