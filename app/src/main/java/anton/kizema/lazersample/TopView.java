@@ -7,11 +7,14 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import anton.kizema.lazersample.elements.Borders;
 import anton.kizema.lazersample.elements.DrawingField;
+import anton.kizema.lazersample.matrix.GameMatrix;
 
 public class TopView extends View implements GameImageView.TouchImageViewCallback {
 
     private DrawingField drawingField;
+    private Borders borders;
 
     private Matrix matrix;
 
@@ -34,7 +37,9 @@ public class TopView extends View implements GameImageView.TouchImageViewCallbac
     }
 
     private void init(){
-        drawingField = new DrawingField();
+        GameMatrix gameMatrix = GameMatrix.createDumpMatrix();
+        drawingField = new DrawingField(gameMatrix);
+        borders = new Borders(gameMatrix);
     }
 
     @Override

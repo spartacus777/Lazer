@@ -3,34 +3,43 @@ package anton.kizema.lazersample.elements;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PathEffect;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 
+import anton.kizema.lazersample.helper.PaintHelper;
 import anton.kizema.lazersample.helper.UIHelper;
+import anton.kizema.lazersample.matrix.GameMatrix;
 
 public class DrawingField extends BaseElement {
 
-    Paint paint;
+    private Paint paint, borderPaint;
+    private GameMatrix gameMatrix;
 
-    public DrawingField(){
+    public DrawingField(GameMatrix gameMatrix){
+        this.gameMatrix = gameMatrix;
+
         paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setXfermode(new PorterDuffXfermode(
-                PorterDuff.Mode.SRC_OVER));
-        paint.setAntiAlias(true);
-
-        paint.setDither(true);                    // set the dither to true
-        paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
-        paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
-        paint.setPathEffect(new PathEffect());   // set the path effect when they join.
-
+        PaintHelper.adjustPaint(paint);
         paint.setStrokeWidth(UIHelper.getPixel(10));
         paint.setColor(Color.RED);
+
+        borderPaint = new Paint();
+        PaintHelper.adjustPaint(borderPaint);
+        borderPaint.setStrokeWidth(UIHelper.getPixel(1));
+        borderPaint.setColor(Color.GRAY);
     }
 
+    @Override
     public void onDraw(Canvas canvas){
-        canvas.drawLine(0,0, UIHelper.getPixel(200), UIHelper.getPixel(300), paint);
+        for (int i=0; i <= gameMatrix.size; ++i){
+            canvas.drawLine(0, i * UIHelper.getH()/( gameMatrix.size +1 ) ,
+                    UIHelper.getW(), i * UIHelper.getH()/ ( gameMatrix.size +1), borderPaint);
+        }
+
+        for (int i=0; i <= gameMatrix.size; ++i){
+            canvas.drawLine(i * UIHelper.getW()/ ( gameMatrix.size +1), 0,
+                    i * UIHelper.getW()/ ( gameMatrix.size +1), UIHelper.getH(), borderPaint);
+        }
+
+//        canvas.drawLine(0,0, UIHelper.getPixel(200), UIHelper.getPixel(300), paint);
     }
 
 }
