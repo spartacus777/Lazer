@@ -117,14 +117,13 @@ public class TopView extends View implements GameImageView.TouchImageViewCallbac
             case MotionEvent.ACTION_UP:
                 Log.v("TOPVIEW", "ACTION_UP");
 
-                if (Math.sqrt(Math.pow(event.getX() - origCoordinates.x, 2) + Math.pow(event.getY() - origCoordinates.y, 2)) < MAX_DIST_TOUCH &&
-                        System.currentTimeMillis() - timeOnDown < MAX_TIME_TOUCH &&
-                        singleFinger){
+                if ( canBeConsideredAsClick(event) && System.currentTimeMillis() - timeOnDown < MAX_TIME_TOUCH && singleFinger){
+
                     //We recognize this as touch
                     Log.d("TOPVIEW", "showTouch");
 
                     /**
-                     * this point in terms of GameMatrix coordinates represents
+                     * This point in terms of GameMatrix coordinates represents
                      * our onClick event's (x,y)
                      */
                     Point selectedCoordinate = getCoordinate(downPoint);
@@ -138,6 +137,10 @@ public class TopView extends View implements GameImageView.TouchImageViewCallbac
                 Log.v("TOPVIEW", "ACTION_CANCEL");
                 break;
         }
+    }
+
+    private boolean canBeConsideredAsClick(MotionEvent event){
+        return Math.sqrt(Math.pow(event.getX() - origCoordinates.x, 2) + Math.pow(event.getY() - origCoordinates.y, 2)) < MAX_DIST_TOUCH;
     }
 
     private Point getCoordinate(PointF clickedPoint){

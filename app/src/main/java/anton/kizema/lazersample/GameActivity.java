@@ -9,7 +9,18 @@ import anton.kizema.lazersample.helper.UIHelper;
 
 public class GameActivity extends AppCompatActivity {
 
+    /**
+     * This view draw background and handle all touches.
+     * Views can listen to touches and view transformation (scale, translation) view TouchImageViewCallback
+     * (use addTouchImageViewCallback(..) )
+     */
     private GameImageView gameImageView;
+
+    /**
+     * This view is responsible for drawing content on top of GameImageView
+     * Also, this view apply proper matrix changes to it's canvas
+     * Generally, this view can be game controller
+     */
     private TopView topView;
 
     private ViewGroup parent;
