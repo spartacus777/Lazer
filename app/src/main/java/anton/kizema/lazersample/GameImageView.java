@@ -228,10 +228,6 @@ public class GameImageView extends ImageView {
             mScaleDetector.onTouchEvent(event);
             PointF curr = new PointF(event.getX(), event.getY());
 
-            if (saveScale == 1) {
-                return true;
-            }
-
             for (TouchImageViewCallback callback : touchImageViewCallback) {
                 callback.onSendTouch(event);
             }
