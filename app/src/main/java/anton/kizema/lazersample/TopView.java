@@ -51,6 +51,7 @@ public class TopView extends View implements GameImageView.TouchImageViewCallbac
 
         //TODO here we should draw all game stuff
         drawingField.onDraw(canvas);
+        borders.onDraw(canvas);
 
         canvas.restore();
     }

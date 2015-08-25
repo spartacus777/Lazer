@@ -10,16 +10,11 @@ import anton.kizema.lazersample.matrix.GameMatrix;
 
 public class DrawingField extends BaseElement {
 
-    private Paint paint, borderPaint;
+    private Paint borderPaint;
     private GameMatrix gameMatrix;
 
     public DrawingField(GameMatrix gameMatrix){
         this.gameMatrix = gameMatrix;
-
-        paint = new Paint();
-        PaintHelper.adjustPaint(paint);
-        paint.setStrokeWidth(UIHelper.getPixel(10));
-        paint.setColor(Color.RED);
 
         borderPaint = new Paint();
         PaintHelper.adjustPaint(borderPaint);
@@ -30,16 +25,15 @@ public class DrawingField extends BaseElement {
     @Override
     public void onDraw(Canvas canvas){
         for (int i=0; i <= gameMatrix.size; ++i){
-            canvas.drawLine(0, i * UIHelper.getH()/( gameMatrix.size +1 ) ,
-                    UIHelper.getW(), i * UIHelper.getH()/ ( gameMatrix.size +1), borderPaint);
+            canvas.drawLine(0, i * UIHelper.getH()/( gameMatrix.size ) ,
+                    UIHelper.getW(), i * UIHelper.getH()/ ( gameMatrix.size), borderPaint);
         }
 
         for (int i=0; i <= gameMatrix.size; ++i){
-            canvas.drawLine(i * UIHelper.getW()/ ( gameMatrix.size +1), 0,
-                    i * UIHelper.getW()/ ( gameMatrix.size +1), UIHelper.getH(), borderPaint);
+            canvas.drawLine(i * UIHelper.getW()/ ( gameMatrix.size), 0,
+                    i * UIHelper.getW()/ ( gameMatrix.size), UIHelper.getH(), borderPaint);
         }
 
-//        canvas.drawLine(0,0, UIHelper.getPixel(200), UIHelper.getPixel(300), paint);
     }
 
 }
