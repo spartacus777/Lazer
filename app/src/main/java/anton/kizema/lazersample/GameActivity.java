@@ -10,6 +10,7 @@ import anton.kizema.lazersample.helper.UIHelper;
 public class GameActivity extends AppCompatActivity {
 
     private GameImageView gameImageView;
+    private TopView topView;
 
     private ViewGroup parent;
 
@@ -28,7 +29,14 @@ public class GameActivity extends AppCompatActivity {
                 UIHelper.getW(), UIHelper.getH()));
 
         gameImageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        gameImageView.setMaxZoom(10);
         parent.addView(gameImageView);
+
+        topView = new TopView(this);
+        topView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        parent.addView(topView);
+
+        gameImageView.addTouchImageViewCallback(topView);
     }
 
 }

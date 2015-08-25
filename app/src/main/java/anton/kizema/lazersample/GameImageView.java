@@ -354,10 +354,6 @@ public class GameImageView extends ImageView {
         this.onReadyListener = onReadyListener;
     }
 
-    public void sendOnTouch(MotionEvent ev) {
-        imageTouchListener.onTouch(this, ev);
-    }
-
     private class ImageTouchListener implements OnTouchListener {
 
         @Override
