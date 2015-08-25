@@ -5,11 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.ImageView;
+import android.view.View;
 
 import anton.kizema.lazersample.elements.DrawingField;
 
-public class TopView extends ImageView implements GameImageView.TouchImageViewCallback {
+public class TopView extends View implements GameImageView.TouchImageViewCallback {
 
     private DrawingField drawingField;
 
@@ -42,7 +42,6 @@ public class TopView extends ImageView implements GameImageView.TouchImageViewCa
         canvas.save();
         canvas.concat(matrix);
 
-
         super.onDraw(canvas);
 
         //TODO here we should draw all game stuff
@@ -53,14 +52,12 @@ public class TopView extends ImageView implements GameImageView.TouchImageViewCa
 
     @Override
     public void applyMatrix(Matrix matrix) {
-        setImageMatrix(matrix);
         this.matrix = matrix;
         invalidate();
     }
 
     @Override
     public void onBitmapSizesCounted(Matrix matrix, int w, int h) {
-        setImageMatrix(matrix);
         this.matrix = matrix;
     }
 
