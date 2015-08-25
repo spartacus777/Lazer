@@ -68,6 +68,8 @@ public class GameImageView extends ImageView {
         void applyMatrix(Matrix matrix);
 
         void onBitmapSizesCounted(Matrix m, int w, int h);
+
+        void onSendTouch(MotionEvent motionEvent);
     }
 
     public interface OnReadyListener {
@@ -364,6 +366,10 @@ public class GameImageView extends ImageView {
             if (saveScale == 1 && onNoScaleTouchListener != null) {
                 onNoScaleTouchListener.onTouch(event);
                 return true;
+            }
+
+            for (TouchImageViewCallback callback : touchImageViewCallback) {
+                callback.onSendTouch(event);
             }
 
             switch (event.getActionMasked()) {

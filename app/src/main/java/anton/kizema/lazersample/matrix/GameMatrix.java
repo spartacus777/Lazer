@@ -1,7 +1,5 @@
 package anton.kizema.lazersample.matrix;
 
-import android.util.Log;
-
 public class GameMatrix {
 
     private static int GAME_FIELD_SIZE = 20;
@@ -27,7 +25,7 @@ public class GameMatrix {
 
                 //create super dump square matrix
                 if (i==2 || j==2 || i == 18 || j==18){
-                    Log.d("ANT", "gameMatrix.elements[i][j] = 1");
+//                    Log.d("ANT", "gameMatrix.elements[i][j] = 1");
                     gameMatrix.elements[i][j] = 1;
                 }
             }
